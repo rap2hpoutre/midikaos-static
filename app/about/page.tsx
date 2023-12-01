@@ -51,9 +51,9 @@ const AboutPage = () => {
       <div className="flex justify-center">
         <p className="mt-5 italic w-full lg:w-1/2 text-center">
           This site is a work in progress, made with{" "}
-          <ExternalLink href="https://blitzjs.com/">Blitz.js</ExternalLink>{" "}
-          using a PostgreSQL database, hosted on{" "}
-          <ExternalLink href="https://render.com/">render.com</ExternalLink>.
+          <ExternalLink href="https://nextjs.org/">Next.js</ExternalLink>,
+          hosted on{" "}
+          <ExternalLink href="https://vercel.com/">vercel.com</ExternalLink>.
           Files hosted on{" "}
           <ExternalLink href="https://www.ovh.com/">OVH</ExternalLink>. Logo
           made by{" "}

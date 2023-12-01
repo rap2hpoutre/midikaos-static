@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, use, useMemo } from "react";
 import MidifileItem from "./midifile-item";
 import NoResults from "./no-results";
 import database from "@/data/database";
@@ -46,6 +46,8 @@ function Documents({
   );
 }
 
+const regex = /\w+:(".*"|[^ ]+)/gi;
+
 export const MidifilesList = ({
   search,
   page,
@@ -54,60 +56,63 @@ export const MidifilesList = ({
   goToNextPage,
   setSearch,
 }: any) => {
-  const regex = /\w+:(".*"|[^ ]+)/gi;
-  const modifiers = (search.match(regex) || []).map((e: any) => e.split(":"));
-  const remainingQuery = search.replace(regex, "").trim().toLowerCase();
+  const modifiers = useMemo(() => {
+    return (search.match(regex) || []).map((e: any) => e.split(":"));
+  }, [search]);
+  const remainingQuery = useMemo(() => {
+    return search.replace(regex, "").trim().toLowerCase();
+  }, [search]);
+  const midifilesAllMatches = useMemo(
+    () =>
+      database.filter((e) => {
+        if (!remainingQuery && !modifiers.length) return true;
 
-  const midifiles = database.filter((e) => {
-    if (!remainingQuery && !modifiers.length) return true;
-    if (!modifiers.length) {
-      return (
-        e.name.toLowerCase().includes(remainingQuery) ||
-        (e.artist && e.artist.toLowerCase().includes(remainingQuery)) ||
-        (e.tags && e.tags.includes(remainingQuery)) ||
-        (e.instruments && e.instruments.includes(remainingQuery))
-      );
-    }
-    if (!remainingQuery) {
-      return modifiers?.every((modifier: any) => {
-        const [key, value] = modifier;
-        if (key === "bpm") {
-          return e.bpm === parseInt(value.replace(/"/g, ""));
-        } else if (key === "duration") {
-          return e.duration === parseInt(value.replace(/"/g, ""));
-        } else if (key === "tags") {
-          return e.tags?.includes(value.replace(/"/g, ""));
-        } else if (key === "instruments") {
-          return e.instruments?.includes(value.replace(/"/g, ""));
-        } else {
-          return false;
-        }
-      });
-    }
-    return (
-      (e.name.toLowerCase().includes(remainingQuery) ||
-        (e.artist && e.artist.includes(remainingQuery)) ||
-        (e.tags && e.tags.includes(remainingQuery)) ||
-        (e.instruments && e.instruments.includes(remainingQuery))) &&
-      modifiers?.every((modifier: any) => {
-        const [key, value] = modifier;
-        if (key === "bpm") {
-          return e.bpm === parseInt(value);
-        } else if (key === "duration") {
-          return e.duration === parseInt(value);
-        } else if (key === "tags") {
-          return e.tags?.includes(value);
-        } else if (key === "instruments") {
-          return e.instruments?.includes(value);
-        } else {
-          return false;
-        }
-      })
-    );
-  });
-  const hasMore = false;
-  const count = 10;
+        const queryMatch = (field: string, query: string) =>
+          field.toLowerCase() === query || field.toLowerCase().includes(query);
 
+        const modifierMatch = (modifier: [string, string]) => {
+          const [key, value] = modifier;
+          switch (key) {
+            case "bpm":
+              return e.bpm === parseInt(value.replace(/"/g, ""));
+            case "duration":
+              return e.duration === parseInt(value.replace(/"/g, ""));
+            case "tags":
+              return e.tags?.includes(value.replace(/"/g, ""));
+            case "instruments":
+              return e.instruments?.includes(value.replace(/"/g, ""));
+            default:
+              return false;
+          }
+        };
+
+        if (!modifiers.length) {
+          return (
+            queryMatch(e.name, remainingQuery) ||
+            (e.artist && queryMatch(e.artist, remainingQuery)) ||
+            (e.tags && e.tags.includes(remainingQuery)) ||
+            (e.instruments && e.instruments.includes(remainingQuery))
+          );
+        }
+
+        if (!remainingQuery) {
+          return modifiers.every(modifierMatch);
+        }
+
+        return (
+          (queryMatch(e.name, remainingQuery) ||
+            (e.artist && queryMatch(e.artist, remainingQuery)) ||
+            (e.tags && e.tags.includes(remainingQuery)) ||
+            (e.instruments && e.instruments.includes(remainingQuery))) &&
+          modifiers.every(modifierMatch)
+        );
+      }),
+    [modifiers, remainingQuery]
+  );
+
+  const hasMore = midifilesAllMatches.length > 10;
+  const count = midifilesAllMatches.length;
+  const midifiles = midifilesAllMatches.slice(page * 10, page * 10 + 10);
   return (
     <div>
       {count ? (
