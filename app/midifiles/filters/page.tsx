@@ -4,8 +4,6 @@ import { getInstruments, getTags } from "@/app/utils/getMidifile";
 import Link from "next/link";
 import React from "react";
 
-export const Midifile = () => {};
-
 function Tags({ tags }: any) {
   return (
     <div>
