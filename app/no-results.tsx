@@ -1,7 +1,13 @@
+import database from "@/data/database";
 import Link from "next/link";
+import { useMemo } from "react";
 
-export default function NoResults({ setSearch }: any) {
-  const midifiles: any[] = [];
+export default function NoResults({ setSearch, search }: any) {
+  const midifiles: any[] = useMemo(
+    () => database.sort(() => Math.random() - 0.5).slice(0, 3),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [search]
+  );
   return (
     <div className="m-5">
       <h2 className="text-purple-600 font-bold text-xl">Oops, no result.</h2>

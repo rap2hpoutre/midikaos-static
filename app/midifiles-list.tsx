@@ -131,7 +131,7 @@ export const MidifilesList = ({
             <div className="m-5 text-gray-500 animate-pulse">Loading...</div>
           }
         >
-          <NoResults setSearch={setSearch} />
+          <NoResults setSearch={setSearch} search={search} />
         </Suspense>
       )}
     </div>

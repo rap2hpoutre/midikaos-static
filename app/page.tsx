@@ -1,19 +1,10 @@
 "use client";
-import Image from "next/image";
 import { Suspense, useEffect, useState } from "react";
 import Suggestion from "./suggestion";
 import FakeDocuments from "./fake-documents";
 import { MidifilesList } from "./midifiles-list";
 import { useRouter, useSearchParams } from "next/navigation";
-
-function updateFilter(search: string, type: string, value: string): string {
-  return `${type}:${value.match(" ") ? `"${value}"` : value} ${search.replace(
-    new RegExp(`${type}:(".*"|[^ ]+)`, "gm"),
-    ""
-  )}`
-    .trim()
-    .replace(/\s\s+/g, " ");
-}
+import { updateFilter } from "./utils/filters";
 
 export default function Home() {
   const router = useRouter();

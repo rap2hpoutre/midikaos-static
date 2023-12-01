@@ -6,10 +6,9 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MIDI Files Library",
+  title: "Midikaos - MIDI Files Library",
   description:
     "A Standard MIDI Files Library with 3K tracks collected by a music teacher at the end of the 20th century",
-  // "A Standard MIDI Files Library",
 };
 
 export default function RootLayout({
@@ -17,13 +16,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { title, description } = metadata;
+  const { title } = metadata;
   const fullTitle = `Midikaos - ${title}`;
   return (
     <html lang="en">
       <head>
-        <title>{fullTitle}</title>
-        <meta name="description" content={description as string} />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
@@ -63,22 +60,13 @@ export default function RootLayout({
         />
         <meta property="og:url" content="http://midikaos.mnstrl.org/" />
         <meta name="twitter:card" content="summary_large_image"></meta>
-
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-0193GBL6XD"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-0193GBL6XD');`,
-          }}
-        ></script>
       </head>
 
       <body className={inter.className}>
         <div className="container mx-auto py-5 text-gray-900">
           <div className="ml-5 flex flex-row">
             <a href="/">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/circuit.svg" className="h-8" alt="logo" />
             </a>
             <h1 className="ml-4 text-3xl font-bold tracking-wider font-mono">
@@ -99,7 +87,7 @@ export default function RootLayout({
               className="link-pink ml-1"
               target="_blank"
               rel="noreferrer"
-              href="https://github.com/rap2hpoutre/midikaos"
+              href="https://github.com/rap2hpoutre/midikaos-static"
             >
               Source code
             </a>
