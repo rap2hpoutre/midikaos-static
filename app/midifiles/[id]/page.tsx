@@ -42,7 +42,7 @@ function Line({ name, value }: { name: string; value: any }) {
   );
 }
 
-export const Midifile = ({ midifile }: any) => {
+const Midifile = ({ midifile }: any) => {
   const router = useRouter();
   return (
     <div className="border border-gray-400 shadow-md m-5 p-5 rounded-md">
